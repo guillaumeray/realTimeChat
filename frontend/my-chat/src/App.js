@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import './App.css'; // Import the CSS file
 
-const SERVER_URL = window.location.hostname === "localhost" ? "http://localhost:3001" : "https://your-production-url.com";
+const SERVER_URL = window.location.hostname === "localhost" ? "http://localhost:3001" : "https://realtimechat-backend-l49g.onrender.com/";
 let socket = io(SERVER_URL);
 
 function App() {
