@@ -55,26 +55,40 @@
   margin: 0;
   padding: 0;
   overflow: auto;
-  height: 300px; /* Adjust this value as needed */
+  height: 400px; /* Adjust this value based on your needs */
+  background: linear-gradient(to right, #0f2027, #203a43, #2c5364); /* Gradient background */
 }
 
 .message-item {
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 5px;
-  background-color: #f0f0f0; /* Light grey */
+  margin: 10px;
+  clear: both;
 }
 
-.message-item:nth-child(even) {
-  background-color: #d0d0d0; /* Darker grey */
+.message-item .message-content {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 10px;
+  background-color: #DCF8C6;
+  border: 1px solid #DCF8C6;
+  color: #000;
+  font-size: 14px;
+  margin-bottom: 1px;
 }
 
-.message-item .pseudo {
-  font-weight: bold;
+.message-item .message-author {
+  font-size: 14px;
+  color: #fff; /* Change the color to white */
+  margin-bottom: 5px;
+  font-weight: bold; /* Make the text bold */
+  text-transform: uppercase; /* Convert the text to uppercase */
 }
 
-.message-item .text {
-  margin-left: 10px;
+.message-item.received {
+  text-align: left;
+}
+
+.message-item.sent {
+  text-align: right;
 }
 
 .login-button {

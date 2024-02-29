@@ -7,6 +7,14 @@ import './App.css'; // Import the CSS file
 const SERVER_URL = window.location.hostname === "localhost" ? "http://localhost:3001" : "https://realtimechat-backend-l49g.onrender.com/";
 let socket = io(SERVER_URL);
 
+function getColorFromAuthor(author) {
+    if (author.length < 2) {
+        return '#000'; // Default color if the author's name is less than 2 characters
+    }
+    const hue = (author.charCodeAt(0) + author.charCodeAt(1)) * 6 % 360;
+    return `hsl(${hue}, 70%, 70%)`;
+}
+
 function App() {
     const [pseudo, setPseudo] = useState(localStorage.getItem('pseudo') || '');
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('pseudo')); // Add this line
@@ -34,8 +42,13 @@ function App() {
 
     const handleLogin = (e) => {
       e.preventDefault();
-      localStorage.setItem('pseudo', pseudo);
-      setIsLoggedIn(true); // Add this line
+      if (pseudo.length < 2) {
+        alert('Pseudo must be at least 2 characters long.'); // Replace this with your actual method of showing an error
+        return;
+      } else {
+        localStorage.setItem('pseudo', pseudo);
+        setIsLoggedIn(true); // Add this line  
+      }
     };
 
     const handleDisconnect = () => {
@@ -66,25 +79,31 @@ function App() {
             <label htmlFor="pseudo-input">Pseudo:</label>
             <input id="pseudo-input" className="input-field" value={pseudo} onChange={e => setPseudo(e.target.value)} disabled={isLoggedIn} />
             <button className={`login-button ${isLoggedIn ? 'disabled' : ''}`} disabled={isLoggedIn}>Login</button>
+            <button className="disconnect-button" onClick={handleDisconnect} disabled={!isLoggedIn}>Disconnect</button> {/* Change this line */}
         </form>
         {isLoggedIn ? <p>Welcome {pseudo} - You are login !</p> : <p>You are not logged in! Please enter a pseudo</p> } 
-        <button className="disconnect-button" onClick={handleDisconnect} disabled={!isLoggedIn}>Disconnect</button> {/* Change this line */}
         <ul className="message-list">
-                {messages.map((message, index) => (
-                    <li key={index} className="message-item">
-                        <span className="pseudo">{message.pseudo}</span>
-                        <span className="text">{message.message}</span>
-                    </li>
-                ))}
-            </ul>
-            <form onSubmit={handleMessageSubmit}>
-                <label htmlFor="message-input">Message:</label>
-                <input id="message-input" className="input-field" value={message} onChange={e => setMessage(e.target.value)} />
-                <button type="button" onClick={toggleEmojiPicker}>😀</button>
-                {showEmojiPicker ? <Picker onEmojiClick={onEmojiClick} /> : null}
-                <button className="message-button">Send</button>
-            </form>
-        <button className="clear-messages-button" onClick={handleClearMessages}>Clear Messages</button> {/* Add the CSS class */}
+            {messages.map((message, index) => (
+                <li key={index} className={`message-item ${message.sentByMe ? 'sent' : 'received'}`}>
+                    <span className="message-author" style={{color: getColorFromAuthor(message.pseudo)}}>{message.pseudo}  </span>
+                    <div className="message-content">
+                        <span className="message-text">{message.message}</span>
+                    </div>
+                </li>
+            ))}
+        </ul>
+        {isLoggedIn && (
+            <>
+                <form onSubmit={handleMessageSubmit}>
+                    <label htmlFor="message-input">Message:</label>
+                    <input id="message-input" className="input-field" value={message} onChange={e => setMessage(e.target.value)} />
+                    <button type="button" onClick={toggleEmojiPicker}>😀</button>
+                    {showEmojiPicker ? <Picker onEmojiClick={onEmojiClick} /> : null}
+                    <button className="message-button">Send</button>
+                </form>
+                <button className="clear-messages-button" onClick={handleClearMessages}>Clear Messages</button> 
+            </>
+        )}
       </div>
     );
 }
