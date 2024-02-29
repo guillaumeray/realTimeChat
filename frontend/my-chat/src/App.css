@@ -34,6 +34,20 @@
       width: 100%;
       box-sizing: border-box;
   }
+
+  .chat-header {
+    font-size: 1.2em;
+}
+}
+
+.chat-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  font-size: 1.5em;
 }
 
 .message-list {
@@ -118,4 +132,10 @@
   font-size: 16px;
   margin: 4px 2px;
   cursor: pointer;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
 }

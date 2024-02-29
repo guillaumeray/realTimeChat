@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
+import Picker from 'emoji-picker-react';
+
 import './App.css'; // Import the CSS file
 
 const SERVER_URL = window.location.hostname === "localhost" ? "http://localhost:3001" : "https://realtimechat-backend-l49g.onrender.com/";
@@ -10,6 +12,7 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('pseudo')); // Add this line
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
     useEffect(() => {
         socket.on('chat messages', (messages) => {
@@ -21,7 +24,14 @@ function App() {
         });
     }, []);
 
-    
+    const onEmojiClick = (emojiObject, event) => {
+        setMessage(prevMessage => prevMessage + emojiObject.emoji);
+    };
+
+    const toggleEmojiPicker = () => {
+        setShowEmojiPicker(!showEmojiPicker);
+    };
+
     const handleLogin = (e) => {
       e.preventDefault();
       localStorage.setItem('pseudo', pseudo);
@@ -49,9 +59,13 @@ function App() {
 
     return (
       <div className="app-container">
+        <header className="chat-header">
+            <h1>Chat Application</h1>
+        </header>
         <form onSubmit={handleLogin}>
-        <input className="input-field" value={pseudo} onChange={e => setPseudo(e.target.value)} disabled={isLoggedIn} /> {/* Change this line */}
-        <button className={`login-button ${isLoggedIn ? 'disabled' : ''}`} disabled={isLoggedIn}>Login</button> {/* Change this line */}
+            <label htmlFor="pseudo-input">Pseudo:</label>
+            <input id="pseudo-input" className="input-field" value={pseudo} onChange={e => setPseudo(e.target.value)} disabled={isLoggedIn} />
+            <button className={`login-button ${isLoggedIn ? 'disabled' : ''}`} disabled={isLoggedIn}>Login</button>
         </form>
         {isLoggedIn ? <p>Welcome {pseudo} - You are login !</p> : <p>You are not logged in! Please enter a pseudo</p> } 
         <button className="disconnect-button" onClick={handleDisconnect} disabled={!isLoggedIn}>Disconnect</button> {/* Change this line */}
@@ -63,10 +77,13 @@ function App() {
                     </li>
                 ))}
             </ul>
-        <form onSubmit={handleMessageSubmit}>
-            <input className="input-field" value={message} onChange={e => setMessage(e.target.value)} />
-            <button className="message-button">Send</button>
-        </form>
+            <form onSubmit={handleMessageSubmit}>
+                <label htmlFor="message-input">Message:</label>
+                <input id="message-input" className="input-field" value={message} onChange={e => setMessage(e.target.value)} />
+                <button type="button" onClick={toggleEmojiPicker}>😀</button>
+                {showEmojiPicker ? <Picker onEmojiClick={onEmojiClick} /> : null}
+                <button className="message-button">Send</button>
+            </form>
         <button className="clear-messages-button" onClick={handleClearMessages}>Clear Messages</button> {/* Add the CSS class */}
       </div>
     );
