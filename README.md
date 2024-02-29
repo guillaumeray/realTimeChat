@@ -2,6 +2,13 @@
 
 This is a real-time chat application built with React on the frontend and Node.js on the backend.
 
+## Preview
+
+App preview available : https://realtimechat-frontend.onrender.com/
+
+Deploy with Render.com
+
+
 ## Frontend
 
 The frontend of the application is built with React. It includes a login system where users can enter their pseudo name to join the chat. Once logged in, users can send messages that are displayed in a message list. The frontend communicates with the backend through a WebSocket connection, using the Socket.IO library.
